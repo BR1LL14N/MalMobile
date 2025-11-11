@@ -76,4 +76,5 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.squareup.retrofit)
+    implementation(libs.jsoup)
 }

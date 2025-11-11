@@ -11,14 +11,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+
+import androidx.navigation.navArgument
 import com.example.myanime.ui.screens.FavoriteScreen
+import ui.screens.AnimeDetailScreen
 import ui.screens.HomeScreen
 import ui.screens.ProfileScreen
 import ui.screens.SearchScreen
+import ui.screens.WatchScreen
 
 
 @Composable
@@ -27,10 +32,10 @@ fun MainApp() {
 
     // Daftar item navbar kita
     val items = listOf(
-        Screen.Home,
-        Screen.Search,
-        Screen.Favorite,
-        Screen.Profile
+        BottomBarScreen.Home,
+        BottomBarScreen.Search,
+        BottomBarScreen.Favorite,
+        BottomBarScreen.Profile
     )
 
     Scaffold(
@@ -46,14 +51,10 @@ fun MainApp() {
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navController.navigate(screen.route) {
-                                // Pop up ke start destination agar tombol back
-                                // tidak menumpuk stack
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
-                                // Hindari duplikasi saat di-klik ulang
                                 launchSingleTop = true
-                                // Restore state saat navigasi kembali
                                 restoreState = true
                             }
                         }
@@ -62,17 +63,39 @@ fun MainApp() {
             }
         }
     ) { innerPadding ->
-        // NavHost adalah area konten yang akan berubah
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route, // Mulai dari Home
+            startDestination = BottomBarScreen.Home.route, // Mulai dari Home
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Definisikan rute ke screen
-            composable(Screen.Home.route) { HomeScreen() }
-            composable(Screen.Search.route) { SearchScreen() }
-            composable(Screen.Favorite.route) { FavoriteScreen() }
-            composable(Screen.Profile.route) { ProfileScreen() }
+            // --- UBAH PANGGILAN INI ---
+            composable(BottomBarScreen.Home.route) {
+                // Kita berikan navController ke HomeScreen
+                HomeScreen(navController = navController)
+            }
+            composable(BottomBarScreen.Search.route) { SearchScreen() }
+            composable(BottomBarScreen.Favorite.route) { FavoriteScreen() }
+            composable(BottomBarScreen.Profile.route) { ProfileScreen() }
+
+            // --- TAMBAHKAN RUTE BARU INI ---
+            composable(
+                route = AnimeDetailScreen.route,
+                arguments = listOf(
+                    navArgument(AnimeDetailScreen.ARG_SLUG) { type = NavType.StringType }
+                )
+            ) {
+                // --- PERBARUI INI: Berikan NavController ---
+                AnimeDetailScreen(navController = navController)
+            }
+
+            composable(
+                route = WatchScreen.route,
+                arguments = listOf(
+                    navArgument(WatchScreen.ARG_SLUG) { type = NavType.StringType }
+                )
+            ) {
+                WatchScreen()
+            }
         }
     }
 }
