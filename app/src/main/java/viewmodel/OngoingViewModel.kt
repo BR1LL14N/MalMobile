@@ -16,11 +16,9 @@ class OngoingViewModel : ViewModel() {
     private val TAG = "OngoingViewModel"
 
     // _animeList (Private): Hanya bisa diubah oleh ViewModel ini.
-    // Ini berisi daftar anime yang sebenarnya.
     private val _animeList = MutableStateFlow<List<AnimeItem>>(emptyList())
 
     // animeList (Public): Hanya bisa "dibaca" oleh UI.
-    // UI akan "mengamati" (observe) ini untuk perubahan.
     val animeList: StateFlow<List<AnimeItem>> = _animeList.asStateFlow()
 
     // State untuk menunjukkan apakah sedang loading
@@ -38,15 +36,18 @@ class OngoingViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true // Mulai loading
             try {
-                // Panggil API untuk halaman 1
-                val response = RetrofitClient.apiService.getOngoingAnime(page = 1)
+                // Panggil API dengan type "ongoing" dan page 1
+                val response = RetrofitClient.apiService.getOngoingAnime(
+                    type = "ongoing",
+                    page = 1
+                )
 
-                if (response.status == "success") {
+                if (response.success) {
                     // Update 'state' kita dengan data baru
-                    _animeList.value = response.data.animeList
-                    Log.d(TAG, "Berhasil fetch data: ${response.data.animeList.size} item.")
+                    _animeList.value = response.result
+                    Log.d(TAG, "Berhasil fetch data: ${response.result.size} item.")
                 } else {
-                    Log.e(TAG, "API Error: ${response.message}")
+                    Log.e(TAG, "API Error: Code ${response.code}")
                     _animeList.value = emptyList() // Kosongkan jika error
                 }
 

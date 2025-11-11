@@ -74,9 +74,9 @@ fun AnimeItemCard(
         Row(
             modifier = Modifier.padding(12.dp)
         ) {
-            // Gambar Thumbnail
+            // Gambar Poster
             AsyncImage(
-                model = anime.thumb, // <-- Coil memuat URL ini
+                model = anime.poster, // <-- Coil memuat URL ini
                 contentDescription = anime.title,
                 modifier = Modifier
                     .size(width = 80.dp, height = 110.dp)
@@ -86,7 +86,7 @@ fun AnimeItemCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Kolom Teks (Judul, Episode, Hari Update)
+            // Kolom Teks (Judul, Episode, Hari Rilis)
             Column(
                 modifier = Modifier.weight(1f) // Agar memenuhi sisa ruang
             ) {
@@ -98,20 +98,26 @@ fun AnimeItemCard(
                     overflow = TextOverflow.Ellipsis // Jika judul terlalu panjang
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
-                    text = anime.episode,
+                    text = anime.currentEpisode,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // anime.dayUpdated bisa jadi null, jadi kita cek dulu
-                anime.dayUpdated?.let {
-                    Text(
-                        text = "Update: $it",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                Text(
+                    text = "Rilis: ${anime.releaseDay}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Update: ${anime.newestReleaseDate}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.secondary
+                )
             }
         }
     }

@@ -1,78 +1,41 @@
 package models
 import com.google.gson.annotations.SerializedName
 
-// Model untuk respons utama (untuk /complete dan /ongoing)
+// Model untuk respons utama dari API baru
 data class AnimeApiResponse(
-    @SerializedName("status")
-    val status: String,
+    @SerializedName("success")
+    val success: Boolean,
 
-    @SerializedName("message")
-    val message: String,
+    @SerializedName("code")
+    val code: Int,
 
-    @SerializedName("data")
-    val data: AnimeListData,
+    @SerializedName("result")
+    val result: List<AnimeItem>,
 
-    @SerializedName("meta")
-    val meta: Meta
-)
-
-// Model untuk bagian "data"
-data class AnimeListData(
-    @SerializedName("anime_list")
-    val animeList: List<AnimeItem>
+    @SerializedName("creator")
+    val creator: String
 )
 
 // Model untuk satu item anime
-// Kita gabungkan "complete" dan "ongoing" di sini
-// 'score' dan 'day_updated' dibuat nullable (?) karena tidak ada di kedua respons
 data class AnimeItem(
     @SerializedName("title")
     val title: String,
 
-    @SerializedName("id")
-    val id: String,
+    @SerializedName("slug")
+    val slug: String,
 
-    @SerializedName("thumb")
-    val thumb: String, // URL gambar
+    @SerializedName("poster")
+    val poster: String, // URL gambar
 
-    @SerializedName("episode")
-    val episode: String,
+    @SerializedName("current_episode")
+    val currentEpisode: String,
 
-    @SerializedName("uploaded_on")
-    val uploadedOn: String,
+    @SerializedName("release_day")
+    val releaseDay: String,
 
-    @SerializedName("link")
-    val link: String, // URL detail
+    @SerializedName("newest_release_date")
+    val newestReleaseDate: String,
 
-    // Hanya untuk 'complete'
-    @SerializedName("score")
-    val score: Double?,
-
-    // Hanya untuk 'ongoing'
-    @SerializedName("day_updated")
-    val dayUpdated: String?
-)
-
-// Model untuk bagian "meta" (paginasi)
-data class Meta(
-    @SerializedName("current_page")
-    val currentPage: Int,
-
-    @SerializedName("total_items")
-    val totalItems: Int,
-
-    @SerializedName("has_next_page")
-    val hasNextPage: Boolean,
-
-    @SerializedName("next_page")
-    val nextPage: Int?
-)
-
-// Model terpisah untuk endpoint /api/ (Welcome)
-data class WelcomeResponse(
-    @SerializedName("message")
-    val message: String,
-
-    @SerializedName("createdBy")
-    val createdBy: String
+    @SerializedName("otakudesu_url")
+    val otakudesuUrl: String
 )
